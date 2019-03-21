@@ -1,187 +1,174 @@
 #include <iostream>
-
-  /* What is tree? Why tree?
-
-  Conditions for the tree
-
-    - key values of all the node in a tree are different each other
-    - On the left side of a node, there are only nodes with key value smaller than the node's key value.
-    - On the right side of a node, there are only nodes with key value larger than the node's key value.
-
-
-  The tree data structure provides O(n) ~ O(logn) search time.
-
-  */
+#define DEBUG 1
 
 using namespace std;
 
-#define DEBUG 1 
+/* What is tree? Why tree?
+
+Conditions for the tree
+
+  - key values of all the node in a tree are different each other
+  - On the left side of a node, there are only nodes with key value smaller than the node's key value.
+  - On the right side of a node, there are only nodes with key value larger than the node's key value.
+
+
+The tree data structure provides O(n) ~ O(logn) search time.
+
+*/
 
 struct Node{
-  int key;
-  Node* left;
-  Node* right;
+    int key;
+    Node* left;
+    Node* right;
 } typedef Node;
 
 class Tree{
-public:
-  Tree();
-  ~Tree();
-  Node* search(Node* root, int t_key);
-  Node* insertNode(Node* root, int key);
-  void deleteNode(Node* root, int key);
-  Node* getRoot();
-  void asscorder(Node* root);
-  void descorder(Node* root);
-
 private:
-  Node* root;
+    Node* root;
 
+public:
+    Tree();
+    ~Tree();
+    Node* insert(int value);
+    Node* _insert(int value, Node* current);
+    Node* search(int value);
+    Node* _search(int value, Node* current);
+    bool remove(Node* current, int value);
+    void inorder();
+    void _inorder(Node* current);
+    void preorder();
+    void _preorder(Node* current);
+    void postorder();
+    void _postorder(Node* current);
 };
 
 Tree::Tree(){
-  root = new Node;
-  root->key = -1;
-  root->left = NULL;
-  root->right = NULL;
+    root = NULL;
 }
 
-Tree::~Tree(){
-}
-
-
-Node* Tree::search(Node* root, int t_key){ // find Node with key value 't_key'
-
-  if( (root == NULL) | (t_key == root->key) ) return root;
-  else if( t_key < root->key ) return search(root->left, t_key);
-  else return search(root->right, t_key);
-  
-}
-
-Node* Tree::insertNode(Node* root, int key){
-
-  Node* new_node = new Node;
-  new_node->key = key;
-
-  if(root == NULL){
-    new_node->left = NULL;
-    new_node->right = NULL;
-    return new_node;
-  }
-
-  else if( key < root->key ){ 
-    root->left = insertNode(root->left, key); return root;
-  }
-  else if( key > root->key ){
-    root->right = insertNode(root->right, key); return root;
-  }
-  else {// key == root->key 
-    cout<<"The node with that key is already exist!\n";
-    return NULL;
-  }
+Tree::~Tree() {
 
 }
 
+Node* Tree::insert(int value){
 
-void Tree::deleteNode(Node* root, int key){
-
-  // there are three cases 
-  // 1. the target node is leaf node
-  //    : just delete it
-  // 2. the target node has one sub-tree (left or right) 
-  //    : switch the node with the root of the sub-tree
-  // 3. the target node has two sub-tree (left and right)
-  //    : find the most left node in the right-side tree
-  //      
-
-  Node* tmp = search(root, key);
-
-  if( (tmp->left == NULL) & (tmp->right == NULL) ){ // Case 1
-    delete tmp;
-    tmp = NULL;
-  }
-  else if( (tmp->left != NULL) & (tmp->right == NULL) ){ // Case 2
-    tmp = tmp->left;
-  }
-  else if( (tmp->right != NULL) & (tmp->left == NULL) ){
-    tmp = tmp->right;
-  }
-  else{ //Case 3
-    Node* parent = tmp;
-    Node* it = tmp->right;
-
-    while(it->left != NULL){
-      parent = it;
-      it = it->left;
-    }
-
-    Node* swap = it;
-
-    if(it->right != NULL){
-      it = it->right;
+    if(root != NULL){
+        return _insert(value, root);
     }
     else{
-      tmp->key = swap->key;
-      delete swap;
+        root = new Node;
+        root->left = NULL;
+        root->right = NULL;
+        root->key = value;
+        if(DEBUG) cout<<"Tree::insert>> "<<root->key<<" was added\n";
+        return root;
+    }
+}
+
+Node* Tree::_insert(int value, Node* current){
+
+    if(current == NULL){
+        current = new Node;
+        current->left = NULL;
+        current->right = NULL;
+        current->key = value;
+        if(DEBUG) cout<<"Tree::insert>> "<<current->key<<" was added\n";
+        return current;
+    }
+    else if (current->key < value){
+        current->right = _insert(value, current->right); return current;
+    }
+    else if (current->key > value){
+        current->left = _insert(value, current->left); return current;
     }
 
-  }
-    
+
+    // already exist
+    if(DEBUG) cout<<"Tree::insert>> "<<value<<" already exist\n";
+    return current;
 
 }
 
-Node* Tree::getRoot(){
-  return root;
-}
+Node* Tree::search(int value){
 
-
-void Tree::asscorder(Node* root){
-
-  if(root == NULL) return;
-
-  asscorder(root->left);
-  cout<<root->key<<" ";
-  asscorder(root->right);
+    return _search(value, root);
 
 }
 
-void Tree::descorder(Node* root){
+Node* Tree::_search(int value, Node* current){
 
-  if(root == NULL) return;
-  
-  descorder(root->right);
-  cout<<root->key<<" ";
-  descorder(root->left);
+    if(current->key == value ) {cout<<"Tree::search>> "<<current->key<<" was founded\n"; return current;}
+    else if (current->key < value ) return _search(value, current->right);
+    else if (current->key > value ) return _search(value, current->left);
+
+    // doesn' exist
+    if(DEBUG) cout<<"Tree::search>> "<<value<<" is not exist\n";
+    return NULL;
+}
+
+bool Tree::remove(Node* current, int value){
+
+    return true;
+}
+
+void Tree::inorder(){
+    _inorder(root);
+}
+
+void Tree::_inorder(Node* current){
+
+    if( current!=NULL ){
+        _inorder(current->left);
+        cout<<"Tree::inorder>> " << current->key <<"\n";
+        _inorder(current->right);
+
+    }
 
 }
 
-
-int main(){
-
-  Tree tree;
-
-  for(int i=0; i<10; i++){
-    tree.insertNode(tree.getRoot(), i);
-  }
-
-  for(int i=0; i<10; i++){
-    cout<<"Find "<< i <<" : "<< (tree.search(tree.getRoot(), i))->key <<"\n";
-  }
-
-  cout<<"Print in Asscending order\n";
-  tree.asscorder(tree.getRoot());
-  cout<<"\n";
-
-  cout<<"Print in Descending order\n";
-  tree.descorder(tree.getRoot());
-  cout<<"\n";
-
-  for(int i=0; i<10; i++){
-    cout<<"Delete "<< i <<"\n";
-    tree.deleteNode(tree.getRoot(), i);
-  }
-
-  return 0;
-
+void Tree::preorder(){
+    _preorder(root);
 }
 
+void Tree::_preorder(Node* current){
+
+    if(current != NULL){
+        cout<<"Tree::preorder>> " << current->key <<"\n";
+        _preorder(current->left);
+        _preorder(current->right);
+    }
+}
+
+void Tree::postorder(){
+    _postorder(root);
+}
+
+void Tree::_postorder(Node* current){
+
+    if(current != NULL){
+        _postorder(current->left);
+        _postorder(current->right);
+        cout<<"Tree::postorder>> " << current->key <<"\n";
+    }
+}
+
+int main() {
+
+    Tree tree;
+
+    tree.insert(4);
+    tree.insert(1);
+    tree.insert(12);
+    tree.insert(4);
+    tree.insert(5);
+
+    cout<<"Search 4 : "<< tree.search(4)->key <<"\n";
+    cout<<"Search 1 : "<< tree.search(1)->key <<"\n";
+    cout<<"Search 12 : "<< tree.search(12)->key <<"\n";
+
+    tree.inorder();
+    tree.preorder();
+    tree.postorder();
+
+    return 0;
+}
