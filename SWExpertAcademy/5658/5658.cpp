@@ -216,7 +216,7 @@ int main(){
             }
         }
 
-        // Find K-th smallest number
+        // Find K-th biggest number
         cout<<"#"<<t+1<<" "<<combinations.giveAns(K)<<"\n";
 
 
