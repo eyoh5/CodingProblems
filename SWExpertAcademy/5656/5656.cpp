@@ -13,7 +13,7 @@ void break_block(int target_h_, int target_w);
 int run_sim(int n);
 void delete_bubble();
 void print_sim_map();
-int count_score();
+int count_score(); //count # of nonzero blocks
 
 
 void print_sim_map(){
@@ -137,7 +137,6 @@ int count_score(){
 
 int main(){
 
-    // Init
     cin >> T;
 
     for (int t=0; t<T; t++){ // Each Test Case
